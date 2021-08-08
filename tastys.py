@@ -2,6 +2,8 @@ from admin import *
 
 class Tastys(Admin):
     admin = Admin()
+    food = Foods()
+    user = Users()
     j = 1
     try:
         while j!=0:
@@ -39,9 +41,32 @@ class Tastys(Admin):
                             admin.delete_food_items()
                         elif user_input==6:
                             admin.admin_logout()
+                        else:
+                            print('Invalid input')
                 except:
                     print('No options selected!')
-            if request==3:
+            elif request==2:
+                i=1
+                try:
+                    while i!=0:
+                        print('+=========================+')
+                        print('**   Select any option   **')
+                        print('+=========================+')
+                        print('| 1.) Login               |')
+                        print('| 2.) Register            |')
+                        print('+=========================+')
+                        user_input = int(input('Please select the field : '))
+                        print('\n')
+                        if user_input==1:
+                            user.login()
+                        elif user_input==2:
+                            user.register()
+                        else:
+                            print('Invalid input')
+
+                except:
+                    print('No options selected!')
+            elif request==3:
                 j=0
                 print('Logging out of tastys')
     

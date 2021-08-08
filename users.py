@@ -1,5 +1,6 @@
 from database import Database as db
 from prettytable import PrettyTable
+from datetime import *
 import re
 
 
@@ -102,12 +103,27 @@ class User(db):
             print('\n')
             if option==1:
                 self.place_new_order()
+            elif option==2:
+                self.order_history()
             elif option==3:
                 self.update_profile()
             elif option==4:
                 break
             else:
                 print('Invalid input!')
+
+#This function is called when user wants to see their order history
+    def order_history(self):
+        table = PrettyTable()
+        table.field_names = ['Food ID', 'Food Item Name', 'Price', 'Date']
+        history = db.History
+        email = self.email
+        for i in history:
+            if i==email:
+                for single_list in history[i]:
+                    table.add_row(single_list)
+                break
+        print(table)
 
 #This function will display all the available food items and will help the user to order
     def place_new_order(self):
@@ -213,6 +229,35 @@ class User(db):
                         if food[food_list]['food_id']==ids:
                             stock = food[food_list]['stock']
                             food[food_list]['stock']=stock-1
+                email = self.email
+                userEmailExist = True
+                history = db.History
+                current_time = datetime.today().strftime('%B %d, %m (Time: %H:%M)')
+            #If there are no data in history, then this block is executed
+                if history:
+                    for mail in history.keys():
+                        if mail==email:
+                            for i in table_list:
+                                i.append(current_time)
+                                db.History[email].append(i)
+                            print('Order has been placed Successfully\n')
+                        else:
+                            userEmailExist = False
+                else:
+                    db.History[email] = []
+                    for i in table_list:
+                        i.append(current_time)
+                        db.History[email].append(i)
+                    print('Order has been placed Successfully\n')
+                del table_list
+
+            #If datas exist in history, and there are no previous order history, then his block is execued            
+                if userEmailExist==False:
+                    db.History[email] = []
+                    for i in table_list:
+                        db.History[email].append(i)
+                    print('Order has been placed Successfully\n')
+
             elif user_input==2:
                 del table_list
                 print('Your order has been canceled\n')
@@ -309,7 +354,3 @@ class User(db):
         self.Session=False
         print('Thank you for choosing Tasty\'s\n')
         
-
-a = User()
-b = Foods()
-a.login()
