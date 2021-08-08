@@ -2,6 +2,9 @@ from database import Database as db
 from prettytable import PrettyTable
 import re
 
+
+from food import *
+
 class User(db):
     def __init__(self):
         self.Session = []
@@ -97,13 +100,127 @@ class User(db):
             print('+=========================+')
             option = int(input('Enter the option : '))
             print('\n')
-            if option==3:
+            if option==1:
+                self.place_new_order()
+            elif option==3:
                 self.update_profile()
             elif option==4:
                 break
             else:
                 print('Invalid input!')
+
+#This function will display all the available food items and will help the user to order
+    def place_new_order(self):
+        if self.Session:
+            food = db.Foods
+            cart = []
+
+            if food:
+                table = PrettyTable()
+                table.field_names = ['Food ID', 'Name', 'Stock', 'Quantity', 'Price', 'Discount', 'Discounted Price']
+                food_list = []
+                for i in range(len(food)):
+                    temp_list = []
+                    temp_list.append(food[i]['food_id'])
+                    temp_list.append(food[i]['name'])
+                    temp_list.append(food[i]['stock'])
+                    temp_list.append(food[i]['quantity'])
+                    temp_list.append(food[i]['price'])
+                    temp_list.append(food[i]['discount'])
+                    temp_list.append(food[i]['discounted_price'])
+                    food_list.append(temp_list)
+                for data in range(len(food_list)):
+                    pieces = food_list[data][3]
+                    price = food_list[data][4]
+                    discount = food_list[data][5]
+                    discounted_price = food_list[data][6]
+                    if str(pieces).isdigit():
+                        food_list[data][3] = str(pieces)+' Pieces'
+                    if str(price).startswith('Rs.'):
+                        pass
+                    else:
+                        food_list[data][4] = 'Rs. '+str(price)
+                    if str(discount).isdigit():
+                        food_list[data][5] = str(discount)+'%'
+                    if str(discounted_price).startswith('Rs.'):
+                        pass
+                    else:
+                        food_list[data][6] = 'Rs. '+str(discounted_price)
+                    table.add_row(food_list[data])
+
+                print(table)
+
+                food_order = list(map(int, input('Enter food ID : ').split(',')))
+                cart = []
+                food_id_to_order = []
+                for i in food_order:
+                    for j in range(len(food)):
+                        if food[j]['food_id']==i:
+                            stock=food[j]['stock']
+                            if stock<1:
+                                name = food[j]['name']
+                                food_id = food[j]['food_id']
+                                print(f'No stock is available for {name} ({food_id})')
+                            else:
+                                temp_list = []
+                                food_id_to_order.append(food[j]['food_id'])
+                                temp_list.append(food[j]['food_id'])
+                                temp_list.append(food[j]['name'])
+                                temp_list.append(food[j]['stock'])
+                                temp_list.append(food[j]['quantity'])
+                                temp_list.append(food[j]['price'])
+                                temp_list.append(food[j]['discount'])
+                                temp_list.append(food[j]['discounted_price'])
+                                cart.append(temp_list)
+                                break
+                    else:
+                        print(f'{i} is not availabale, Please enter a valid food ID')
+                self.cart(cart, food_id_to_order)
+
+            else:
+                print('There are no food items to view\n')
+        else:
+            print('PLease login to view foods\n')
+        
+    def cart(self, cart, food_id_to_order):
+        if cart:
+            table = PrettyTable()
+            food = db.Foods
+            table_list = []
+            total_cost = 0
+            table.field_names = ['Food ID', 'Food Name', 'Price']
+            for i in range(len(cart)):
+                temp_list = []
+                temp_list.append(cart[i][0])
+                temp_list.append(cart[i][1])
+                price = 'Rs. '+str(cart[i][6])
+                total_cost+=cart[i][6]
+                temp_list.append(price)
+                table_list.append(temp_list)
+            for i in table_list:
+                table.add_row(i)
+            print(table)
+            print('Total : Rs. '+str(total_cost))
+            print('+======================+')
+            print('|  Confirm your order  |')
+            print('+===========+==========+')
+            print('| 1.) Yes   | 2.) No   |')
+            print('+===========+==========+')
+            user_input = int(input('Enter your choice : '))
+            if user_input==1:
+                for ids in food_id_to_order:       
+                    for food_list in range(len(food)):
+                        if food[food_list]['food_id']==ids:
+                            stock = food[food_list]['stock']
+                            food[food_list]['stock']=stock-1
+            elif user_input==2:
+                del table_list
+                print('Your order has been canceled\n')
+            else:
+                print('Invalid option')
+
     
+#This function will update the users profile except their email
     def update_profile(self):
         if self.Session:
             users = db.Users
@@ -194,4 +311,5 @@ class User(db):
         
 
 a = User()
+b = Foods()
 a.login()

@@ -22,7 +22,7 @@ class Foods(db):
         foodDict['price'] = 350
         foodDict['discount'] = 5
         foodDict['discounted_price'] = discount
-        foodDict['stock'] = 20
+        foodDict['stock'] = 0
         db.Foods.append(foodDict)
         db.FoodID+=1
 
