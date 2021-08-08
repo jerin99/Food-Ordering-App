@@ -12,80 +12,74 @@ class User(db):
         self.email = ''
         
     def register(self):
-        if self.Session:
-            user_list = db.Users
-            users = {}
-            isUserExist = False
-            isPhone = False
-            isEmail = False
-            isPassword = False
+        user_list = db.Users
+        users = {}
+        isUserExist = False
+        isPhone = False
+        isEmail = False
+        isPassword = False
 
-            phoneRegex = '^[0-9]{10}$'
-            passRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$'
-            emailRegex = '[a-z.@]\.com$'
+        phoneRegex = '^[0-9]{10}$'
+        passRegex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$'
+        emailRegex = '[a-z.@]\.com$'
 
-            name = input('Enter your full name : ')
-            phone = input('Enter your contact number : ')
-            email = input('Enter your email : ')
-            address = input('Enter you address : ')
-            password = input('Enter your password (Atleast one small case, upper case, digit, special character, Minimum Length 6-20): ')
-            recovery = input('Enter a recovery text (You can change your password with this recovery text only) : ')
-            for i in range(len(user_list)):
-                if user_list[i]['email']==email:
-                    isUserExist=True
-                    break
-            if(bool(re.search(phoneRegex, phone))):
-                isPhone = True
-            if(bool(re.search(passRegex, password))):
-                isPassword = True
-            if(bool(re.search(emailRegex, email))):
-                isEmail=True
-            if isPhone==True and isPassword==True and isEmail==True and isUserExist==False:
-                users['name'] = name
-                users['phone'] = phone
-                users['email'] = email
-                users['address'] = address
-                users['password'] = password
-                users['recovery'] = recovery   
-                db.Users.append(users)            
-                print(f'Your account has been created successfully {db.happyMoji}.')
-            elif isUserExist==True:
-                print('This user already exists, Please try to login or reset the password!')
-            elif isPhone==False:
-                print('Please enter a valid number!')
-            elif isEmail==False:
-                print('Please enter a valid email!')
-            elif isPassword==False:
-                print('Please enter a valid password by checking the note!')
-            else:
-                print('Except')
+        name = input('Enter your full name : ')
+        phone = input('Enter your contact number : ')
+        email = input('Enter your email : ')
+        address = input('Enter you address : ')
+        password = input('Enter your password (Atleast one small case, upper case, digit, special character, Minimum Length 6-20): ')
+        recovery = input('Enter a recovery text (You can change your password with this recovery text only) : ')
+        for i in range(len(user_list)):
+            if user_list[i]['email']==email:
+                isUserExist=True
+                break
+        if(bool(re.search(phoneRegex, phone))):
+            isPhone = True
+        if(bool(re.search(passRegex, password))):
+            isPassword = True
+        if(bool(re.search(emailRegex, email))):
+            isEmail=True
+        if isPhone==True and isPassword==True and isEmail==True and isUserExist==False:
+            users['name'] = name
+            users['phone'] = phone
+            users['email'] = email
+            users['address'] = address
+            users['password'] = password
+            users['recovery'] = recovery   
+            db.Users.append(users)            
+            print(f'Your account has been created successfully {db.happyMoji}.')
+        elif isUserExist==True:
+            print('This user already exists, Please try to login or reset the password!')
+        elif isPhone==False:
+            print('Please enter a valid number!')
+        elif isEmail==False:
+            print('Please enter a valid email!')
+        elif isPassword==False:
+            print('Please enter a valid password by checking the note!')
         else:
-            print('You are already logged in!')
+            print('Except')
 
     def login(self):
-        if self.Session:
-            print('You are already logged in')
-        else:
-            users = db.Users
-            email = input('Enter your email : ')
-            password = input('Enter your password : ')
+        users = db.Users
+        email = input('Enter your email : ')
+        password = input('Enter your password : ')
 
-            if users:
-                for i in range(len(users)):
-                    if users[i]['email']==email:
-                        if users[i]['password']==password:
-                            self.Session=True
-                            self.email = email
-                            print(f'Welcome to tastys {db.happyMoji}\n')
-                            self.functions_of_users()
-                            break
-                        else:
-                            print('The password you entered is wrong. Please reset the password!')
-                            break
-                else:
-                    print('No such users')
+        if users:
+            for i in range(len(users)):
+                if users[i]['email']==email:
+                    if users[i]['password']==password:
+                        self.Session=True
+                        self.email = email
+                        print(f'Welcome to tastys {db.happyMoji}\n')
+                        self.functions_of_users()
+                        break
+                    else:
+                        print('The password you entered is wrong. Please reset the password!')
+                        break
             else:
-                print('Currently there are no users')
+                print('No such users')
+        else:
+            print('Currently there are no users')
 
 #This function will display all the activities a user can do
     def functions_of_users(self):
@@ -97,7 +91,8 @@ class User(db):
             print('| 1.) Place new order     |')
             print('| 2.) Order History       |')
             print('| 3.) Update Profile      |')
-            print('| 4.) Go back             |')
+            print('| 4.) Logout              |')
+            print('| 5.) Go back             |')
             print('+=========================+')
             option = int(input('Enter the option : '))
             print('\n')
@@ -106,8 +101,11 @@ class User(db):
             elif option==2:
                 self.order_history()
             elif option==3:
-                self.update_profile()
+                self.update_profile()  
             elif option==4:
+                self.logout() 
+            elif option==5:
+                flag=0
                 break
             else:
                 print('Invalid input!')

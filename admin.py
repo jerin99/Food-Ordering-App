@@ -217,13 +217,3 @@ class Admin(db):
         else:
             print('You are not logged in\n')
 
-
-a = Admin()
-f = Foods()
-a.admin_login()
-# a.add_food_items()
-# a.add_food_items()
-a.view_food_items()
-a.delete_food_items()
-# a.edit_food_items()
-a.view_food_items()
