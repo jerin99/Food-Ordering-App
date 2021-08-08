@@ -170,11 +170,12 @@ class User(db):
                 for i in food_order:
                     for j in range(len(food)):
                         if food[j]['food_id']==i:
-                            stock=food[j]['stock']
+                            stock=int(food[j]['stock'])
                             if stock<1:
                                 name = food[j]['name']
                                 food_id = food[j]['food_id']
                                 print(f'No stock is available for {name} ({food_id})')
+                                break
                             else:
                                 temp_list = []
                                 food_id_to_order.append(food[j]['food_id'])
@@ -225,7 +226,7 @@ class User(db):
                 for ids in food_id_to_order:       
                     for food_list in range(len(food)):
                         if food[food_list]['food_id']==ids:
-                            stock = food[food_list]['stock']
+                            stock = int(food[food_list]['stock'])
                             food[food_list]['stock']=stock-1
                 email = self.email
                 userEmailExist = True
@@ -351,4 +352,8 @@ class User(db):
     def logout(self):
         self.Session=False
         print('Thank you for choosing Tasty\'s\n')
+
+# a = User()
+# b = Foods()
+# a.login()
         

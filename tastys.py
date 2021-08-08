@@ -76,8 +76,9 @@ class Tastys(Admin):
                         else:
                             print('Invalid input')
 
-                except:
-                    print('No options selected!')
+                except Exception as e:
+                    print(e)
+                    # print('No options selected!')
             elif request==3:
                 j=0
                 print('Logging out of tastys')

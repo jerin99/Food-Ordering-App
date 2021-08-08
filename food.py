@@ -37,3 +37,15 @@ class Foods(db):
         foodDict['stock'] = 100
         db.Foods.append(foodDict)
         db.FoodID+=1
+
+        foodDict = {}
+        discount = 600
+        foodDict['food_id'] = 1004
+        foodDict['name'] = 'Black Forest'
+        foodDict['quantity'] = '500gm'
+        foodDict['price'] = 1200
+        foodDict['discount'] = 50
+        foodDict['discounted_price'] = discount
+        foodDict['stock'] = 46
+        db.Foods.append(foodDict)
+        db.FoodID+=1
